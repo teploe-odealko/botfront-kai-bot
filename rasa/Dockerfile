@@ -5,8 +5,7 @@
 # RASA_IMAGE is passed from docker-compose.yml which is generated
 # from ./botfront/docker-compose-template.yml and ./botfront/botfront.yml
 
-ARG RASA_IMAGE
-FROM ${RASA_IMAGE}
+FROM teploeodealko/rasa-for-botfront:2.3.3-e8-1.2.1
 
 # Change back to root user to install dependencies
 USER root
