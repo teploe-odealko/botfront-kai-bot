@@ -23,11 +23,8 @@ services:
       PORT: 3000
     user: root
   rasa:
-    build:
-      context: ./rasa
-      args:
-        RASA_IMAGE: '${IMAGES_CURRENT_RASA}'
-    container_name: botfront-rasa
+    image: teploeodealko/rasa-for-botfront:2.3.3-e8-1.2.1
+    container_name: botfront-rasa1
     networks:
       - botfront-network
     restart: always
@@ -38,7 +35,7 @@ services:
     env_file:
       - .env
     environment:
-      - BF_PROJECT_ID=DJYMrYELueLs3oRo7
+      - BF_PROJECT_ID=saQz9NBoG3R8rE5Mk
     user: root
   actions:
     build:
@@ -61,7 +58,7 @@ services:
     env_file:
       - .env
     environment:
-      - BF_PROJECT_ID=DJYMrYELueLs3oRo7
+      - BF_PROJECT_ID=saQz9NBoG3R8rE5Mk
     user: root
   duckling:
     image: 'botfront/duckling:latest'
