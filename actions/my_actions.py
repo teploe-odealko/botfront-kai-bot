@@ -90,7 +90,7 @@ class FetchStatus(Action):
             logger.info("event linst")
             x = collection_name.insert_one(new_user)
 
-            logger.info("telegram answer", name, created_topic, x.inserted_id, x.acknowledged)
+            logger.info(f"telegram answer { name}, {created_topic}, {x.inserted_id}, {x.acknowledged}")
 
             for event in events:
                 print(event)
