@@ -93,9 +93,9 @@ class FetchStatus(Action):
                 print(event)
                 while True:
                     try:
-                        if event['event'] == 'user':
+                        if 'event' in event and event['event'] == 'user':
                             bot.send_message(chat_id, event['text'], reply_to_message_id=created_topic['message_thread_id'], timeout=30)
-                        elif event['event'] == 'bot':
+                        elif 'event' in event and event['event'] == 'bot':
                             bot.send_message(chat_id, f">>BOT\n{event['text']}", reply_to_message_id=created_topic['message_thread_id'], timeout=30)
                         sleep(1)
                         break
