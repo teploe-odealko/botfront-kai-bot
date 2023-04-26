@@ -24,10 +24,15 @@ class MyAction(Action):
 
     def run(self, dispatcher, tracker, domain):
         # do something.
+        print('action_unknown starting ...')
         current_state = tracker.current_state()
         telegram_metadata = current_state['latest_message']['metadata']
+        print('telegram_metadata', telegram_metadata)
         if telegram_metadata['message_type'] == 'private':
-            dispatcher.utter_message(response="utter_nlu_fallback")
+            print('uttering utter_nlu_fallback', telegram_metadata)
+
+            res = dispatcher.utter_message(response="utter_nlu_fallback")
+            print('res uttering', res)
 
         return []
 
