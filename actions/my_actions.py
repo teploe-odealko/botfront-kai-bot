@@ -102,7 +102,7 @@ class FetchStatus(Action):
                             bot.send_message(chat_id, f">>BOT\n{event['text']}", reply_to_message_id=created_topic['message_thread_id'], timeout=30)
                         sleep(1)
                         break
-                    except telegram.error.TimedOut as exc:
+                    except (telegram.error.TimedOut, telegram.error.RetryAfter) as exc:
                         logger.warning("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
                         sleep(5)
 
