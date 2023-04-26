@@ -60,7 +60,16 @@ class FetchStatus(Action):
     def name(self):
         return 'action_fetch_status'
 
-    def create_topic(self, tracker):
+    def run(self, dispatcher, tracker, domain):
+        logger.info('=========================== my actions ===========================')
+
+        current_state = tracker.current_state()
+        telegram_metadata = current_state['latest_message']['metadata']
+        if telegram_metadata['message_type'] != 'private':
+            return []
+
+        dispatcher.utter_message(template="utter_to_human")
+
         print("create_topic")
         try:
             bot = telegram.Bot(os.getenv("BOT_TOKEN"))
@@ -90,16 +99,18 @@ class FetchStatus(Action):
             logger.info("event linst")
             x = collection_name.insert_one(new_user)
 
-            logger.info(f"telegram answer { name}, {created_topic}, {x.inserted_id}, {x.acknowledged}")
+            logger.info(f"telegram answer {name}, {created_topic}, {x.inserted_id}, {x.acknowledged}")
 
             for event in events:
                 print(event)
                 while True:
                     try:
                         if 'event' in event and event['event'] == 'user':
-                            bot.send_message(chat_id, event['text'], reply_to_message_id=created_topic['message_thread_id'], timeout=30)
+                            bot.send_message(chat_id, event['text'],
+                                             reply_to_message_id=created_topic['message_thread_id'], timeout=30)
                         elif 'event' in event and event['event'] == 'bot':
-                            bot.send_message(chat_id, f">>BOT\n{event['text']}", reply_to_message_id=created_topic['message_thread_id'], timeout=30)
+                            bot.send_message(chat_id, f">>BOT\n{event['text']}",
+                                             reply_to_message_id=created_topic['message_thread_id'], timeout=30)
                         sleep(1)
                         break
                     except (telegram.error.TimedOut, telegram.error.RetryAfter) as exc:
@@ -108,7 +119,8 @@ class FetchStatus(Action):
 
             while True:
                 try:
-                    bot.send_message(chat_id, '=== Конец истории сообщений ===', reply_to_message_id=created_topic['message_thread_id'],
+                    bot.send_message(chat_id, '=== Конец истории сообщений ===',
+                                     reply_to_message_id=created_topic['message_thread_id'],
                                      timeout=30)
                     break
                 except (telegram.error.TimedOut, telegram.error.RetryAfter) as exc:
@@ -118,16 +130,5 @@ class FetchStatus(Action):
 
         except Exception as exc:
             logger.error(f"!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!! {exc}, {traceback.format_exc()}")
-
-    def run(self, dispatcher, tracker, domain):
-        logger.info('=========================== my actions ===========================')
-
-        current_state = tracker.current_state()
-        telegram_metadata = current_state['latest_message']['metadata']
-        if telegram_metadata['message_type'] != 'private':
-            return []
-
-        dispatcher.utter_message(template="utter_to_human")
-        self.create_topic(tracker)
 
         return []
