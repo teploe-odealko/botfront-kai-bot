@@ -51,7 +51,7 @@ class FetchStatus(Action):
     def create_topic(self, tracker):
         print("create_topic")
         try:
-            bot = telegram.Bot("6157961070:AAFsLG77b_NMz7r53sANJqCryQf8XBW8qY0")
+            bot = telegram.Bot("BOT_TOKEN")
 
             # await bot.send_message(text='Hi John!', chat_id=1234567890)
             chat_id = -1001943204451
