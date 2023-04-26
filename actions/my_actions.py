@@ -17,23 +17,27 @@ from pymongo import MongoClient
 import traceback
 
 
-class MyAction(Action):
+class MyActi(Action):
 
     def name(self):
         return 'action_unknown'
 
     def run(self, dispatcher, tracker, domain):
         # do something.
-        print('action_unknown starting ...')
-        current_state = tracker.current_state()
-        telegram_metadata = current_state['latest_message']['metadata']
-        print('telegram_metadata', telegram_metadata)
-        if telegram_metadata['message_type'] == 'private':
-            print('uttering utter_nlu_fallback', telegram_metadata)
+        try:
 
-            res = dispatcher.utter_message(response="utter_nlu_fallback")
-            print('res uttering', res)
+            print('action_unknown starting ...')
+            current_state = tracker.current_state()
+            telegram_metadata = current_state['latest_message']['metadata']
 
+            print('telegram_metadata', telegram_metadata)
+            if telegram_metadata['message_type'] == 'private':
+                print('uttering utter_nlu_fallback', telegram_metadata)
+    
+                res = dispatcher.utter_message(template="utter_nlu_fallback")
+                print('res uttering', res)
+        except Exception as e:
+            print('exception in action_unknown :', e)
         return []
 
 
