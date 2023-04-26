@@ -15,6 +15,9 @@ import sys
 import telegram
 from pymongo import MongoClient
 import traceback
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class MyActi(Action):
@@ -100,15 +103,15 @@ class FetchStatus(Action):
                         sleep(1)
                         break
                     except telegram.error.TimedOut as exc:
-                        print("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
+                        logger.warning("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
                         sleep(5)
 
 
         except Exception as exc:
-            print("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
+            logger.error("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
 
     def run(self, dispatcher, tracker, domain):
-        print('=========================== my actions ===========================')
+        logger.info('=========================== my actions ===========================')
 
         current_state = tracker.current_state()
         telegram_metadata = current_state['latest_message']['metadata']
