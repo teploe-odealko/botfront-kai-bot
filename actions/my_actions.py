@@ -103,38 +103,19 @@ class FetchStatus(Action):
                         print("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
                         sleep(5)
 
-            # already_exist = collection_name.find_one({'telegram_user_id': telegram_metadata['telegram_user_id']})
-            # if already_exist:
-            #     myquery = {"address": "Valley 345"}
-            #     newvalues = {"$set": {"address": "Canyon 123"}}
-            #
-            #     mycol.update_one(myquery, newvalues)
 
         except Exception as exc:
             print("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
 
     def run(self, dispatcher, tracker, domain):
         print('=========================== my actions ===========================')
-        print("create_topic1")
-        # loop = asyncio.get_running_loop()
-        try:
-            dispatcher.utter_message(response="utter_to_human")
-        except Exception:
-            dispatcher.utter_message(text="Передаю в приемную комиссию. Пожалуйста, дождитесь ответа 🙃")
+
+        current_state = tracker.current_state()
+        telegram_metadata = current_state['latest_message']['metadata']
+        if telegram_metadata['message_type'] != 'private':
+            return []
+
+        dispatcher.utter_message(template="utter_to_human")
         self.create_topic(tracker)
-        # asyncio.ensure_future(self.create_topic())
-        # loop.(await self.create_topic())
-        print("create_topic2")
-
-        print("Python version")
-        print(sys.version)
-        print("Version info.")
-        print(sys.version_info)
-        print("last tracker input", tracker.get_latest_input_channel())
-        print("current state", tracker.current_state())
-        print(dispatcher)
-        print(tracker)
-        print(domain)
-
 
         return []
