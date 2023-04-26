@@ -86,11 +86,11 @@ class FetchStatus(Action):
             }
             # bot.send_message(chat_id, str(new_user), reply_to_message_id=created_topic['message_thread_id'])
             events = current_state['events']
-            print(events)
-            print("event linst")
+            logger.info(events)
+            logger.info("event linst")
             x = collection_name.insert_one(new_user)
 
-            print("telegram answer", name, created_topic, x.inserted_id, x.acknowledged)
+            logger.info("telegram answer", name, created_topic, x.inserted_id, x.acknowledged)
 
             for event in events:
                 print(event)
@@ -105,6 +105,15 @@ class FetchStatus(Action):
                     except (telegram.error.TimedOut, telegram.error.RetryAfter) as exc:
                         logger.warning(f"!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!! {exc}, {traceback.format_exc()}")
                         sleep(5)
+
+            while True:
+                try:
+                    bot.send_message(chat_id, '=== Конец истории сообщений ===', reply_to_message_id=created_topic['message_thread_id'],
+                                     timeout=30)
+                    break
+                except (telegram.error.TimedOut, telegram.error.RetryAfter) as exc:
+                    logger.warning(f"!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!! {exc}, {traceback.format_exc()}")
+                    sleep(5)
 
 
         except Exception as exc:
