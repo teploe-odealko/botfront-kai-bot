@@ -103,12 +103,12 @@ class FetchStatus(Action):
                         sleep(1)
                         break
                     except (telegram.error.TimedOut, telegram.error.RetryAfter) as exc:
-                        logger.warning("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
+                        logger.warning(f"!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!! {exc}, {traceback.format_exc()}")
                         sleep(5)
 
 
         except Exception as exc:
-            logger.error("!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!!", exc, traceback.format_exc())
+            logger.error(f"!!!!!!!!!!!!!! EXCEPTION: !!!!!!!!!!!!!!!!!!! {exc}, {traceback.format_exc()}")
 
     def run(self, dispatcher, tracker, domain):
         logger.info('=========================== my actions ===========================')
