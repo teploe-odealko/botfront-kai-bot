@@ -60,18 +60,19 @@ class FetchStatus(Action):
     def name(self):
         return 'action_fetch_status'
 
-    def run(self, dispatcher, tracker, domain):
-        logger.info('=========================== my actions ===========================')
-
-        current_state = tracker.current_state()
-        telegram_metadata = current_state['latest_message']['metadata']
-        if telegram_metadata['message_type'] != 'private':
-            return []
-
-        dispatcher.utter_message(template="utter_to_human")
-
-        print("create_topic")
+    async def run(self, dispatcher, tracker, domain):
         try:
+            logger.info('=========================== my actions ===========================')
+
+            current_state = tracker.current_state()
+            telegram_metadata = current_state['latest_message']['metadata']
+            if telegram_metadata['message_type'] != 'private':
+                return []
+
+            dispatcher.utter_message(template="utter_to_human")
+
+            print("create_topic")
+
             bot = telegram.Bot(os.getenv("BOT_TOKEN"))
 
             # await bot.send_message(text='Hi John!', chat_id=1234567890)
@@ -84,23 +85,26 @@ class FetchStatus(Action):
 
             created_topic = bot.create_forum_topic(chat_id, name)
             dbname = get_database()
-            collection_name = dbname["users1"]
+            collection_name = dbname["users2"]
             new_user = {
                 "telegram_user_id": telegram_metadata['telegram_user_id'],
                 "username": username,
                 "first_name": first_name,
                 "topic_id": created_topic['message_thread_id'],
                 "admin_chat_id": chat_id,
-                "user_chat_id": telegram_metadata['telegram_user_id'],
+                "user_chat_id": telegram_metadata['chat_id'],
             }
             # bot.send_message(chat_id, str(new_user), reply_to_message_id=created_topic['message_thread_id'])
             events = current_state['events']
             logger.info(events)
             logger.info("event linst")
+
+            delete_many_res = collection_name.delete_many({'telegram_user_id': telegram_metadata['telegram_user_id']})
             x = collection_name.insert_one(new_user)
-
-            logger.info(f"telegram answer {name}, {created_topic}, {x.inserted_id}, {x.acknowledged}")
-
+            logger.info(f"after delete {list(collection_name.find({}))}")
+            #
+            logger.info(f"telegram answer {delete_many_res} {delete_many_res.acknowledged} {name}, {created_topic}, {x.inserted_id}, {x.acknowledged}")
+            #
             for event in events:
                 print(event)
                 while True:
